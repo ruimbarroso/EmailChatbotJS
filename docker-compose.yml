@@ -3,22 +3,22 @@ services:
     build:
       context: ./be
     environment:
-      NODE_ENV: dev
+      ENVIRONMENT: dev
       GROQ_API_KEY: ${GROQ_API_KEY}
       JWT_TOKEN: ${JWT_TOKEN}
       PORT: 8080
-    volumes:
-      - ./be/src:/app/src
     ports:
       - "8080:8080"
-    command: "npm run dev"
+    command: "./server"
   fe:
     build:
       context: ./fe
     environment:
       NODE_ENV: dev
+      VITE_API_URL: ${API_URL}
     volumes:
       - ./fe/src:/app/src
     ports:
       - "3000:3000"
     command: "npm run dev"
+    
