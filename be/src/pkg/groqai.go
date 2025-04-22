@@ -19,7 +19,7 @@ type Groq struct {
 func NewGroqClient(url string, groqKey string) *Groq {
 	return &Groq{client: &http.Client{}, url: url, groqKey: groqKey}
 }
-func EncodePayload(payload types.GroqPayload) ([]byte, error) {
+func EncodePayload(payload map[string]interface{}) ([]byte, error) {
 	jsonPayload, err := json.Marshal(payload)
 	if err != nil {
 		return nil, err

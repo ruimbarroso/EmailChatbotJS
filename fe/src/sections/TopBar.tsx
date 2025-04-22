@@ -1,4 +1,4 @@
-import { useAuth, useEmailManager } from "../contexts/Contexts";
+import { useAppManager, useAuth } from "../contexts/Contexts";
 import menuIcon from "../assets/menu.svg";
 import closeIcon from "../assets/close.svg";
 import googleIcon from "../assets/google.svg";
@@ -8,8 +8,7 @@ import { useState, useRef, useEffect } from "react";
 const TopBar = () => {
     const { email, logout } = useAuth();
     const [isHidden, setIsHidden] = useState(true);
-    const { toogleMenu, isMenuExpanded } = useEmailManager();
-
+    const { toogleMenu, isMenuExpanded } = useAppManager();
     const menuRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -21,7 +20,7 @@ const TopBar = () => {
     return (
         <div id="top-bar" className="bg-neutral-950 flex justify-between items-center box-border w-dvw p-4 h-25">
             <div className="w-20 md:w-1/6 lg:w-1/5">
-                <div className="flex justify-center items-center box-content w-15 h-15 ml-2 sm:hidden"
+                <div className="flex justify-center items-center box-content w-15 h-15 ml-2 sm:hidden cursor-pointer"
                     onClick={toogleMenu}>
                     <img src={isMenuExpanded ? closeIcon : menuIcon} alt="Menu Icon" className="w-1/2 h-1/2 m-0" />
                 </div>

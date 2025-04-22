@@ -28,10 +28,15 @@ func (*AiChatHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 
-	var requestBody types.GroqPayload
+	var requestBody map[string]interface{}
 	if err := json.NewDecoder(r.Body).Decode(&requestBody); err != nil {
 		http.Error(w, "Invalid request payload", http.StatusBadRequest)
 		return
+	}
+
+	requestBody["stream"] = false
+	requestBody["response_format"] = map[string]interface{}{
+		"type": "json_object",
 	}
 
 	payload, err := pkg.EncodePayload(requestBody)

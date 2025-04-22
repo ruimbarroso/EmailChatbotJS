@@ -1,5 +1,6 @@
 import { LoginForm } from './components/LoginForm';
 import { ProtectedPage } from './components/ProtectedPage';
+import { AppManagerProvider } from './contexts/AppManagerContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { EmailManagerProvider } from './contexts/MailManagerContext';
 import MainContent from './sections/MainContent';
@@ -10,18 +11,20 @@ function App() {
 
   return (<AuthProvider>
     <ProtectedPage
-      protectedPageBuilder={()=>
-        <EmailManagerProvider>
-          <>
-            <TopBar />
-            <div className='flex'>
-              <SideMenu />
-              <MainContent />
-            </div>
-          </>
-        </EmailManagerProvider>
+      protectedPageBuilder={() =>
+        <AppManagerProvider>
+          <EmailManagerProvider>
+            <>
+              <TopBar />
+              <div className='flex'>
+                <SideMenu />
+                <MainContent />
+              </div>
+            </>
+          </EmailManagerProvider>
+        </AppManagerProvider>
       }
-      authPageBuilder={()=><LoginForm/>}>
+      authPageBuilder={() => <LoginForm />}>
     </ProtectedPage>
   </AuthProvider>);
 }
