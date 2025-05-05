@@ -127,7 +127,7 @@ rm -rf email-chatbot
 
 - Vite build tool  
 - React with TypeScript  
-- Bootstrap for styling  
+- Tailwind for styling  
 - State management with React hooks  
 
 **Key Components:**
