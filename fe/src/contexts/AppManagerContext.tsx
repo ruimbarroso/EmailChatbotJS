@@ -8,7 +8,7 @@ export const AppManagerProvider = ({ children }: { children: JSX.Element }) => {
 
     
     const pushElem = useCallback((elem: JSX.Element) => {
-        setElemStack(prev => [...prev, elem]); // Immutable update
+        setElemStack(prev => [...prev, elem]);
       }, []);
     
       const peekElem = useCallback(() => {
@@ -16,11 +16,11 @@ export const AppManagerProvider = ({ children }: { children: JSX.Element }) => {
       }, [elemStack]);
     
       const popElem = useCallback(() => {
-        setElemStack(prev => prev.slice(0, -1)); // Immutable update
+        setElemStack(prev => prev.slice(0, -1)); 
       }, []);
 
       const replaceAllElem = useCallback((elem: JSX.Element) => {
-        setElemStack(() => [elem]); // Immutable update
+        setElemStack(() => [elem]);
       }, []);
 
     const toogleMenu = useCallback(() => {

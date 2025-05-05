@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useAppManager, useAuth, useEmailSender } from "../contexts/Contexts";
+import { PopUpMessageType, useAppManager, useAuth, useEmailSender, usePopUpMessage } from "../contexts/Contexts";
 import { LoadingPoints } from "./LoadingPoints";
 
 export const EmailWriterWidget = () => {
@@ -22,6 +22,7 @@ export const EmailWriterWidget = () => {
     const [originalMessageId, setOriginalMessageId] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [showOriginalEmail, setShowOriginalEmail] = useState(false);
+    const { pushMsg } = usePopUpMessage();
 
     useEffect(() => {
         if (!respondingTo) {
@@ -34,11 +35,10 @@ export const EmailWriterWidget = () => {
                 return { Address: prev.Address + ", " + cur.Address, Name: "" }
             }).Address);
             setTopic(respondingTo.Subject);
-            setShowOriginalEmail(true); // Show original email by default when responding
+            setShowOriginalEmail(true);
         }
     }, [respondingTo]);
 
-    // For handling file attachments
     const handleAttachment = async (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
             const newAttachments = await Promise.all(
@@ -47,7 +47,7 @@ export const EmailWriterWidget = () => {
                     return {
                         name: file.name,
                         type: file.type,
-                        base64Content: base64.split(',')[1] // Remove data URL prefix
+                        base64Content: base64.split(',')[1]
                     };
                 })
             );
@@ -128,7 +128,19 @@ export const EmailWriterWidget = () => {
                     Attachments: attachments
                 };
 
-                await sendEmail(emailData);
+                try {
+                    await sendEmail(emailData);
+                    pushMsg({
+                        type: PopUpMessageType.SUCCESS,
+                        message: "Email sent!"
+                    })
+                } catch (error) {
+                    pushMsg({
+                        type: PopUpMessageType.ERROR,
+                        message: "Unable to send email!"
+                    })
+                }
+
             } else {
                 headers.push(`Content-Type: text/plain; charset="UTF-8"`);
                 headers.push(`Content-Transfer-Encoding: 7bit`);
@@ -144,7 +156,18 @@ export const EmailWriterWidget = () => {
                     ].join('\r\n')
                 };
 
-                await sendEmail(emailData);
+                try {
+                    await sendEmail(emailData);
+                    pushMsg({
+                        type: PopUpMessageType.SUCCESS,
+                        message: "Email sent!"
+                    })
+                } catch (error) {
+                    pushMsg({
+                        type: PopUpMessageType.ERROR,
+                        message: "Unable to send email!"
+                    })
+                }
             }
 
             setIsLoading(false);
@@ -192,7 +215,6 @@ export const EmailWriterWidget = () => {
                         />
                     </div>
 
-                    {/* Original Email Context Box (only shown when responding) */}
                     {isReply && showOriginalEmail && respondingTo !== null && (
                         <div className="border border-gray-600 rounded p-3 bg-gray-800">
                             <div className="flex justify-between items-center mb-2">
@@ -217,7 +239,6 @@ export const EmailWriterWidget = () => {
                         </div>
                     )}
 
-                    {/* Toggle for showing original email (only shown when responding but box is hidden) */}
                     {isReply && !showOriginalEmail && (
                         <button
                             onClick={() => setShowOriginalEmail(true)}

@@ -17,7 +17,6 @@ export const ScrollableP = ({
     useEffect(() => {
         const checkOverflow = () => {
             if (textRef.current) {
-                // console.log(`${textContent}\n${textRef.current.scrollWidth} > ${textRef.current.parentElement?.clientWidth ?? 0}`)
                 setIsOverflowing(textRef.current.scrollWidth > (textRef.current.parentElement?.clientWidth ?? 0));
             }
         };
@@ -25,7 +24,7 @@ export const ScrollableP = ({
         checkOverflow();
         window.addEventListener('resize', checkOverflow);
         return () => window.removeEventListener('resize', checkOverflow);
-    }, [textContent]); // Re-check when name changes
+    }, [textContent]); 
 
 
     return (

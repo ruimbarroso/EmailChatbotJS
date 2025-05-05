@@ -8,6 +8,7 @@ import (
 func CreateSmptAuth(email string, password string, smtpHost string) smtp.Auth {
 	return smtp.PlainAuth("", email, password, smtpHost)
 }
+
 func CreateAddress(smtpHost string, smtpPort string) string {
 	return fmt.Sprintf("%s:%s", smtpHost, smtpPort)
 }

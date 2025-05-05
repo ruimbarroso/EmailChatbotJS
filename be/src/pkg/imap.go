@@ -42,7 +42,20 @@ func (c *ImapClient) Login(email string, password string) *imapclient.Command {
 func (c *ImapClient) Logout() *imapclient.Command {
 	return c.client.Logout()
 }
+func VerifyEmailCredentials(email, password, provider string) (*imapclient.Client, error) {
+	imapServer := types.PROVIDERS[provider].ImapServer
 
+	c, err := imapclient.DialTLS(imapServer, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := c.Login(email, password).Wait(); err != nil {
+		return nil, err
+	}
+
+	return c, nil
+}
 func (c *ImapClient) GetMailboxes() []*types.Mailbox {
 
 	boxes := make([]*types.Mailbox, 0)
@@ -109,7 +122,6 @@ func (c *ImapClient) Fetch(toFetch imap.NumSet) ([]*types.Email, error) {
 			break
 		}
 
-		// Find the body section in the response
 		var bodySection imapclient.FetchItemDataBodySection
 		ok := false
 		for {
@@ -126,13 +138,11 @@ func (c *ImapClient) Fetch(toFetch imap.NumSet) ([]*types.Email, error) {
 			return nil, errors.New("FETCH command did not return body section")
 		}
 
-		// Read the message via the go-message library
 		mr, err := mail.CreateReader(bodySection.Literal)
 		if err != nil {
 			return nil, err
 		}
 
-		// Print a few header fields
 		h := mr.Header
 
 		email := types.Email{Attachments: make([]string, 0)}
@@ -176,7 +186,6 @@ func (c *ImapClient) Fetch(toFetch imap.NumSet) ([]*types.Email, error) {
 			email.ReplyTo = replyTo
 		}
 
-		// Process the message's parts
 		for {
 			p, err := mr.NextPart()
 			if err == io.EOF {
@@ -187,7 +196,6 @@ func (c *ImapClient) Fetch(toFetch imap.NumSet) ([]*types.Email, error) {
 
 			switch h := p.Header.(type) {
 			case *mail.InlineHeader:
-				// This is the message's text (can be plain-text or HTML)
 				ct := p.Header.Get("Content-Type")
 				b, _ := io.ReadAll(p.Body)
 				if strings.Contains(ct, "text/plain") {
@@ -197,7 +205,6 @@ func (c *ImapClient) Fetch(toFetch imap.NumSet) ([]*types.Email, error) {
 					email.HTMLBody = string(b)
 				}
 			case *mail.AttachmentHeader:
-				// This is an attachment
 				filename, _ := h.Filename()
 				email.Attachments = append(email.Attachments, filename)
 			}

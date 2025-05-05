@@ -10,14 +10,6 @@ import (
 	"github.com/ruimbarroso/emailchatbot-be/src/utils"
 )
 
-var PROVIDERS = map[string]types.Provider{
-	"gmail": {
-		ImapServer: "imap.gmail.com:993",
-		SmptHost:   "smtp.gmail.com",
-		SmptPort:   "587",
-	},
-}
-
 type EmailHandler struct {
 }
 
@@ -80,7 +72,7 @@ func (*EmailHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func loadMailboxes(w http.ResponseWriter, user *types.UserCredentials) {
-	client, err := pkg.NewIMAPEmailClient(PROVIDERS[user.Provider].ImapServer)
+	client, err := pkg.NewIMAPEmailClient(types.PROVIDERS[user.Provider].ImapServer)
 	if err != nil {
 		http.Error(w, "Error creating Imap connection", http.StatusInternalServerError)
 		return
@@ -104,7 +96,7 @@ func loadMailboxes(w http.ResponseWriter, user *types.UserCredentials) {
 	w.Write(jsonRes)
 }
 func loadEmails(w http.ResponseWriter, mailBox *types.RequestMailboxFetch, user *types.UserCredentials) {
-	client, err := pkg.NewIMAPEmailClient(PROVIDERS[user.Provider].ImapServer)
+	client, err := pkg.NewIMAPEmailClient(types.PROVIDERS[user.Provider].ImapServer)
 	if err != nil {
 		http.Error(w, "Error creating Imap connection", http.StatusInternalServerError)
 		return
@@ -147,11 +139,11 @@ func sendEmail(w http.ResponseWriter, r *http.Request, user *types.UserCredentia
 	}
 
 	err := pkg.SendEmail(
-		pkg.CreateSmptAuth(user.Email, user.Password, PROVIDERS[user.Provider].SmptHost),
+		pkg.CreateSmptAuth(user.Email, user.Password, types.PROVIDERS[user.Provider].SmptHost),
 		email.From,
 		email.To,
 		[]byte(email.Message),
-		pkg.CreateAddress(PROVIDERS[user.Provider].SmptHost, PROVIDERS[user.Provider].SmptPort))
+		pkg.CreateAddress(types.PROVIDERS[user.Provider].SmptHost, types.PROVIDERS[user.Provider].SmptPort))
 	if err != nil {
 		http.Error(w, "Error Sending Email", http.StatusInternalServerError)
 		return

@@ -98,6 +98,33 @@ export const useAppManager = () => {
 
     return ctx;
 }
+
+export enum PopUpMessageType {
+    INFO = "INFO", 
+    SUCCESS = "SUCCESS", 
+    ERROR = "ERROR"
+}
+export interface PopUpMessage {
+    message: string,
+    type: PopUpMessageType
+}
+export interface PopUpMessageManager {
+    messages: PopUpMessage[]
+    pushMsg: (elem: PopUpMessage) => void
+    peekMsg: () => PopUpMessage | null
+    popMsg: () => void
+    replaceAllMsg: (elem: PopUpMessage) => void
+}
+export const PopUpMessageContext = createContext<PopUpMessageManager | null>(null);
+export const usePopUpMessage = () => {
+    const ctx = useContext(PopUpMessageContext);
+    if (!ctx) {
+        throw new Error("usePopUpMessage must be used within an PopUpMessageProvider");
+    }
+
+    return ctx;
+}
+
 export interface Attachment {
     name: string;
     type: string;

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { PaginatedMailbox, useAppManager, useEmailManager } from "../contexts/Contexts";
+import { PaginatedMailbox, PopUpMessageType, useAppManager, useEmailManager, usePopUpMessage } from "../contexts/Contexts";
 import { LoadingPoints } from "./LoadingPoints";
 import { ScrollableP } from "./ScrollableP";
 import { PageController } from "./PageController";
@@ -13,6 +13,7 @@ const MailboxPage = () => {
     const { pushElem } = useAppManager();
     const [emailBox, setEmailBox] = useState<PaginatedMailbox | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+     const { pushMsg } = usePopUpMessage();
 
     useEffect(() => {
         const fetchEmails = async () => {
@@ -37,7 +38,15 @@ const MailboxPage = () => {
                     const box = getSelectedEmailBox();
                     if (!box) return;
                     setIsLoading(true);
-                    await loadBoxEmails(box, selectedPage, 10)
+                    try {
+                        await loadBoxEmails(box, selectedPage, 10)
+                    } catch (error) {
+                        pushMsg({
+                            type: PopUpMessageType.ERROR,
+                            message: "Unable to load emails page!"
+                        })
+                    }
+
                     setIsLoading(false);
                 }}>
                     <img src={refreshIcon} alt="Refresh Icon" className="w-6 h-6 mt-1 " />

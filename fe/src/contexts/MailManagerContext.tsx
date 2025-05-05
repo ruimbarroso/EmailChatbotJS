@@ -15,7 +15,6 @@ export const EmailManagerProvider = ({ children }: { children: JSX.Element }) =>
     useEffect(() => {
         const aux = loadingPagesByMailbox.current
         return () => {
-            // Cleanup on unmount
             aux.clear();
         };
     }, []);

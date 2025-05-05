@@ -7,6 +7,7 @@ import (
 
 	"github.com/ruimbarroso/emailchatbot-be/src/handlers"
 	"github.com/ruimbarroso/emailchatbot-be/src/middleware"
+	"github.com/ruimbarroso/emailchatbot-be/src/utils"
 )
 
 func main() {
@@ -25,7 +26,7 @@ func main() {
 		middleware.LogRequest,
 	)(mainMux.ServeHTTP)
 
-	port := fmt.Sprintf(":%s", "8080")
+	port := fmt.Sprintf(":%s", utils.GetEnv("PORT", "8080"))
 	log.Printf("Server starting at %s\n", port)
 	http.ListenAndServe(port, mux)
 

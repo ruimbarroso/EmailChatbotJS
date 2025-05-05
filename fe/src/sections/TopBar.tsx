@@ -1,4 +1,4 @@
-import { useAppManager, useAuth } from "../contexts/Contexts";
+import { PopUpMessageType, useAppManager, useAuth, usePopUpMessage } from "../contexts/Contexts";
 import menuIcon from "../assets/menu.svg";
 import closeIcon from "../assets/close.svg";
 import googleIcon from "../assets/google.svg";
@@ -10,6 +10,7 @@ const TopBar = () => {
     const [isHidden, setIsHidden] = useState(true);
     const { toogleMenu, isMenuExpanded } = useAppManager();
     const menuRef = useRef<HTMLDivElement>(null);
+    const { pushMsg } = usePopUpMessage();
 
     useEffect(() => {
         if (menuRef.current) {
@@ -46,8 +47,15 @@ const TopBar = () => {
                     <div className="flex justify-around w-1/2" onClick={async () => {
                         try {
                             await logout();
+                            pushMsg({
+                                type: PopUpMessageType.SUCCESS,
+                                message: "You are logged out!"
+                            })
                         } catch (err) {
-                            console.log("error logout!", err)
+                            pushMsg({
+                                type: PopUpMessageType.ERROR,
+                                message: "Unable to logout!"
+                            })
                         }
                     }}>
                         <p className="text-white">Logout</p>

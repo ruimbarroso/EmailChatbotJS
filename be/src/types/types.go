@@ -77,3 +77,21 @@ type RequestEmail struct {
 	To      []string
 	Message string
 }
+
+var PROVIDERS = map[string]Provider{
+	"gmail": {
+		ImapServer: "imap.gmail.com:993",
+		SmptHost:   "smtp.gmail.com",
+		SmptPort:   "587",
+	},
+	"outlook": {
+		ImapServer: "outlook.office365.com:993",
+		SmptHost:   "smtp.office365.com",
+		SmptPort:   "587",
+	},
+	"mail.com": {
+		ImapServer: "imap.mail.com:993",
+		SmptHost:   "smtp.mail.com",
+		SmptPort:   "587",
+	},
+}

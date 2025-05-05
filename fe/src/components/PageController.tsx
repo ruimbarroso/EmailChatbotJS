@@ -1,8 +1,9 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { useEmailManager } from "../contexts/Contexts";
+import { useCallback, useEffect, useState } from "react";
+import { PopUpMessageType, useEmailManager, usePopUpMessage } from "../contexts/Contexts";
 
 export const PageController = () => {
     const { getSelectedEmailBox, selectedPage, loadBoxEmails } = useEmailManager();
+    const { pushMsg } = usePopUpMessage();
 
     const [pages, setPage] = useState(-1);
     useEffect(() => {
@@ -15,11 +16,15 @@ export const PageController = () => {
     }, [getSelectedEmailBox]);
     const buildOnClickFunc = useCallback((page: number) => {
         return () => {
-            console.log(`Previous: ${selectedPage} Page: ${page}`)
             const box = getSelectedEmailBox();
             if (!box || page <= 0 || page > pages || page === selectedPage) return;
 
-            loadBoxEmails(box, page, 10);
+            loadBoxEmails(box, page, 10).catch(err => {
+                pushMsg({
+                    type: PopUpMessageType.ERROR,
+                    message: "Unable to load emails page!"
+                })
+            });
         }
     }, [getSelectedEmailBox, pages, selectedPage, loadBoxEmails]);
 

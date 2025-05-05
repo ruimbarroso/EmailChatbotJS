@@ -5,13 +5,13 @@ import (
 	"net/http"
 )
 
-// Retrieve User from context
+// Set pair [key K Value V] in context
 func SetInContext[K any, V any](r *http.Request, key K, value *V) *http.Request {
 	ctx := context.WithValue(r.Context(), key, value)
 	return r.WithContext(ctx)
 }
 
-// Retrieve User from context
+// Get Value V* from context with Key K
 func GetFromContext[K any, V any](ctx context.Context, key K) (*V, bool) {
 	value, ok := ctx.Value(key).(*V)
 	return value, ok

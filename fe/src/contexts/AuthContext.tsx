@@ -9,7 +9,6 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
 
     useEffect(() => {
         getCredentials();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const login = useCallback(async (newEmail: string, password: string, provider: string) => {

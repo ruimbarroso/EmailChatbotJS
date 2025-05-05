@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/ruimbarroso/emailchatbot-be/src/pkg"
 	"github.com/ruimbarroso/emailchatbot-be/src/types"
 	"github.com/ruimbarroso/emailchatbot-be/src/utils"
 )
@@ -49,6 +50,17 @@ func (*AuthHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Invalid request payload", http.StatusBadRequest)
 			return
 		}
+
+		client, err := pkg.VerifyEmailCredentials(
+			requestBody.Email,
+			requestBody.Password,
+			requestBody.Provider,
+		)
+		if err != nil {
+			http.Error(w, "Invalid email or password", http.StatusUnauthorized)
+			return
+		}
+		defer client.Logout()
 
 		token, err := utils.GenerateJWT(&requestBody)
 

@@ -34,7 +34,6 @@ const SendEmailPage = ({ email }: { email: Email | null }) => {
         const containerWidth = containerRect.width;
         const mouseX = e.clientX - containerRect.left;
 
-        // Calculate new width (min 20%, max 80%)
         const newLeftWidth = Math.min(
             Math.max((mouseX / containerWidth) * 100, 20),
             80
@@ -58,14 +57,12 @@ const SendEmailPage = ({ email }: { email: Email | null }) => {
             ref={containerRef}
             className="flex flex-col justify-start items-center box-border w-dvw h-[calc(100vh-6.25rem)] p-4 sm:ml-50 overflow-hidden rounded border-4 border-neutral-950"
         >
-            {/* Header with back button */}
             <div className="flex items-center justify-start w-full h-10 bg-[#101010] p-2 mb-2">
                 <div className="cursor-pointer" onClick={popElem}>
                     <img src={BackArrowIcon} alt="Back Arrow Icon" className="w-6 h-6 mt-1 " />
                 </div>
             </div>
             <EmailSenderProvider emailToRespond={email}>
-                {/* Resizable two-panel layout */}
                 <div className="flex h-full w-full relative">
                     {/* Email Writer Panel */}
                     <div

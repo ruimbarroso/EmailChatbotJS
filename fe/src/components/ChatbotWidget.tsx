@@ -1,17 +1,29 @@
 import { useState } from "react";
-import { GroqAiRole, useEmailSender } from "../contexts/Contexts";
+import { GroqAiRole, PopUpMessageType, useEmailSender, usePopUpMessage } from "../contexts/Contexts";
 
 export const ChatbotWidget = () => {
     const [prompt, setPrompt] = useState('');
-    const { chat, sendPrompt, receivedChat, chooseReceivedChat,clearReceivedChat } = useEmailSender();
+    const { chat, sendPrompt, receivedChat, chooseReceivedChat, clearReceivedChat } = useEmailSender();
     const [choiceIndex, setChoiceIndex] = useState(0);
-    const handleSubmit = async () => {
+    const { pushMsg } = usePopUpMessage();
 
-        await sendPrompt(prompt);
+    const handleSubmit = async () => {
+        try {
+            await sendPrompt(prompt);
+            pushMsg({
+                type: PopUpMessageType.SUCCESS,
+                message: "Prompt sent!"
+            })
+        } catch (error) {
+            pushMsg({
+                type: PopUpMessageType.ERROR,
+                message: "Unable to send prompt!"
+            })
+        }
+
         setPrompt("");
     };
 
-    // Auto-resize textarea based on content
     const handleInput = (e: React.FormEvent<HTMLTextAreaElement>) => {
         const target = e.currentTarget;
         target.style.height = 'auto';
@@ -55,7 +67,7 @@ export const ChatbotWidget = () => {
                 <div className="m-4">
                     <div className="flex justify-center cursor-pointer">
                         <div className="bg-green-600 text-white p-3 rounded-lg max-w-xs"
-                            onClick={()=>{
+                            onClick={() => {
                                 chooseReceivedChat(choiceIndex);
 
                                 clearReceivedChat();
@@ -71,7 +83,7 @@ export const ChatbotWidget = () => {
                             disabled={choiceIndex === 0}
                             className="p-2 bg-amber-500 text-white rounded disabled:opacity-50 hover:bg-amber-600"
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z"/></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z" /></svg>
                         </button>
                         <span className="text-gray-400">
                             {choiceIndex + 1} / {receivedChat.messages.length}
@@ -81,7 +93,7 @@ export const ChatbotWidget = () => {
                             disabled={choiceIndex === receivedChat.messages.length - 1}
                             className="p-2 bg-amber-500 text-white rounded disabled:opacity-50 hover:bg-amber-600"
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="m321-80-71-71 329-329-329-329 71-71 400 400L321-80Z"/></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="m321-80-71-71 329-329-329-329 71-71 400 400L321-80Z" /></svg>
                         </button>
                     </div>
                 </div>
