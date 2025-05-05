@@ -58,8 +58,8 @@ The Email Chatbot is a full-stack application that helps users manage their emai
 
 **Clone the repository:**
 ```bash
-git clone https://github.com/yourusername/email-chatbot.git
-cd email-chatbot
+git clone https://github.com/ruimbarroso/EmailChatbotJS.git
+cd EmailChatbotJS
 ```
 
 **Create environment files:**
